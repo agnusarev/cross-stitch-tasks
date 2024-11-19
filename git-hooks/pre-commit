@@ -1,0 +1,211 @@
+#!/bin/bash
+
+echo_visual_line () {
+    py -c 'print("#" * 120)'
+}
+echo "#"
+echo
+echo_visual_line
+echo "STARTING PRE-COMMIT"
+echo_visual_line
+echo
+
+# PREPARING
+###################################################################################################
+# branch=`git rev-parse --abbrev-ref HEAD`
+# if [ "$branch" = master ] || [ "$branch" = main ] || [ "$branch" = develop ]; then
+#     message="===================Please don't commit directly to $branch.==================="
+#     echo -e "\033[1;31mERROR: $message\033[0m";
+#     exit 1
+# fi
+
+repo_dir=`git rev-parse --show-toplevel`
+src="$repo_dir/src"
+
+# получение "списка" файлов .py в каталоге src/ помещённых в индекс (staged) и подсчёт их количества
+src_changed=`git diff --line-prefix="$repo_dir/" --name-only --staged --diff-filter=AM $branch | grep "^${src}/.*\.py$"`
+src_changed_count=`echo $src_changed | wc -w`
+
+convert_lf_to_crlf () {
+	# if we try to execute this script on Windows,
+    # it would be better to change LF to CRLF:
+    if [[ "$OSTYPE" == "msys" ]]; then
+    # Lightweight shell and GNU utilities compiled for Windows
+        unix2dos $1
+    elif [[ "$OSTYPE" == "cygwin" ]]; then
+        # POSIX compatibility layer and Linux environment emulation for Windows
+        if [ ! command -v unix2dos ]; then
+            unix2dos $1
+        else
+            echo "Can not convert LF to CRLF in $1 because of 'unix2dos' is not installed"
+        fi
+    fi
+}
+###################################################################################################
+
+# VENV
+###################################################################################################
+echo "VENV"
+echo_visual_line
+
+message="[Policy] ===================Activating venv in $repo_dir ...==================="
+# echo with color: https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+echo -e "\033[1;34mInfo: $message\033[0m"
+cd "$repo_dir" && source "$(poetry env info --path)"/scripts/activate
+if [ $? -eq 1 ]; then
+    message="[Policy] ===================Venv can not activate.==================="
+    echo -e "\033[1;31mERROR: $message\033[0m";
+    exit 1
+else
+    message="[Policy] ===================Venv activated.==================="
+    echo -e "\033[1;32mOK: $message\033[0m"
+fi
+echo_visual_line
+echo
+###################################################################################################
+
+
+# IMPORT SORTING (ISORT)
+###################################################################################################
+echo "IMPORT SORTING (ISORT)"
+echo_visual_line
+
+message="[Policy] ===================Sorting imports in $repo_dir with isort...==================="
+# echo with color: https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+echo -e "\033[1;34mInfo: $message\033[0m"
+
+if [ $src_changed_count -gt 0 ]; then
+    isort $src_changed
+
+    code=$?
+
+    if [ $code -eq 1 ]; then
+        message="[Policy] ===================Isort couldn't make changes==================="
+        echo -e "\033[1;31mERROR: $message\033[0m";
+        exit 1
+    elif [ $code -eq 0 ]; then
+        message="[Policy] ===================Isort sorted imports.==================="
+        echo -e "\033[1;32mOK: $message\033[0m"
+    else
+        message="[Policy] ===================Unexpected error.==================="
+        echo -e "\033[1;32mOK: $message\033[0m"
+        exit 1
+    fi
+else
+    message="[Policy] ===================Isort checking skipped (src not changed)==================="
+    echo -e "\033[1;32mOK: $message\033[0m"
+fi
+
+echo_visual_line
+echo
+###################################################################################################
+
+# REFORMATTING (BLACK)
+###################################################################################################
+echo "REFORMATTING (BLACK)"
+echo_visual_line
+
+message="[Policy] Changing code in $repo_dir with black..."
+# echo with color: https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+echo -e "\033[1;34mInfo: $message\033[0m"
+
+if [ $src_changed_count -gt 0 ]; then
+    black --line-length 120 $src_changed
+
+    code=$?
+
+    if [ $code -eq 1 ]; then
+        message="[Policy] ===================Black couldn't make changes==================="
+        echo -e "\033[1;31mERROR: $message\033[0m";
+        exit 1
+    elif [ $code -eq 0 ]; then
+        message="[Policy] ===================Black made changes successfully.==================="
+        echo -e "\033[1;32mOK: $message\033[0m"
+    else
+        message="[Policy] ===================Unexpected error.==================="
+        echo -e "\033[1;32mOK: $message\033[0m"
+        exit 1
+    fi
+else
+    message="[Policy] ===================Black skipped (src not changed)==================="
+    echo -e "\033[1;32mOK: $message\033[0m"
+fi
+
+echo_visual_line
+echo
+###################################################################################################
+
+# LINTING (FLAKE8)
+###################################################################################################
+echo "LINTING (FLAKE8)"
+echo_visual_line
+
+message="[Policy] ===================Checking code in $repo_dir with flake8...==================="
+# echo with color: https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+echo -e "\033[1;34mInfo: $message\033[0m"
+
+if [ $src_changed_count -gt 0 ]; then
+    flake8 $src_changed
+
+    if [ $? -eq 1 ]; then
+        message="[Policy] Flake8 check failed; please check and fix your code."
+        echo -e "\033[1;31mERROR: $message\033[0m";
+        exit 1
+    else
+        message="[Policy] Passed flake8 checking."
+        echo -e "\033[1;32mOK: $message\033[0m"
+    fi
+else
+    message="[Policy] ===================flake8 skipped (src not changed)==================="
+    echo -e "\033[1;32mOK: $message\033[0m"
+fi
+
+echo_visual_line
+echo
+###################################################################################################
+
+# TYPE CHECKING (MYPY)
+###################################################################################################
+echo "TYPE CHECKING (MYPY)"
+echo_visual_line
+
+message="[Policy] ===================Checking code in $repo_dir with mypy...==================="
+# echo with color: https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+echo -e "\033[1;34mInfo: $message\033[0m"
+
+if [ $src_changed_count -gt 0 ]; then
+    mypy $src_changed
+
+    code=$?
+
+    if [ $code -eq 1 ]; then
+        message="[Policy] ===================Mypy check failed; please check and fix your code.==================="
+        echo -e "\033[1;31mERROR: $message\033[0m";
+        exit 1
+    elif [ $code -eq 127 ]; then
+        message="[Policy] ===================Mypy not found; please install mypy to venv.==================="
+        echo -e "\033[1;31mERROR: $message\033[0m";
+        exit 1
+    elif [ $code -eq 0 ]; then
+        message="[Policy] ===================Passed mypy checking.==================="
+        echo -e "\033[1;32mOK: $message\033[0m"
+    else
+        message="[Policy] ===================Unexpected error.==================="
+        echo -e "\033[1;31mERROR: $message\033[0m"
+        exit 1
+    fi
+else
+    message="[Policy] ===================Mypy checking skipped (src not changed)==================="
+    echo -e "\033[1;32mOK: $message\033[0m"
+fi
+echo_visual_line
+echo
+###################################################################################################
+
+echo_visual_line
+echo "ENDING PRE-COMMIT"
+echo_visual_line
+echo
+echo "#"
+
+exit 0
