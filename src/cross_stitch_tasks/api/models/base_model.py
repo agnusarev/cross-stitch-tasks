@@ -1,0 +1,24 @@
+from sqlalchemy import exc
+
+from cross_stitch_tasks.api.app import db
+from cross_stitch_tasks.env_vars import DB_SCHEMA
+
+
+class BaseModel(db.Model):  # type: ignore
+    __abstract__ = True
+    base_table_args = {"schema": DB_SCHEMA}
+
+    def __init__(self, *args: object, **kwargs: object) -> None:
+        super().__init__(*args, **kwargs)
+        self.schema = DB_SCHEMA
+
+    @staticmethod
+    def commit_db() -> None:
+        try:
+            db.session.commit()
+        except exc.SQLAlchemyError:
+            db.session.rollback()
+            raise
+        finally:
+            db.session.close()
+            db.engine.dispose()

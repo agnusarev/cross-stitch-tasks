@@ -1,0 +1,47 @@
+# Основные команды для использования alembic
+
+---
+
+- Применение всех миграций:
+
+```bash
+poetry run alembic upgrade head
+```
+
+---
+
+- Отмена всех миграций:
+
+```bash
+poetry run alembic downgrade base
+```
+
+- Отмена 1 миграции:
+
+```bash
+poetry run alembic downgrade -1
+```
+
+---
+
+- Создание миграции:
+
+```bash
+poetry run alembic revision --autogenerate -m "Комментарий"
+```
+
+---
+
+- Просмотр текущей версии базы данных:
+
+```bash
+poetry run alembic current
+```
+
+---
+
+- Просмотр истории миграций:
+
+```bash
+poetry run alembic history --verbose
+```
