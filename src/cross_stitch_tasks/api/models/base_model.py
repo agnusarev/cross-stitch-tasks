@@ -1,5 +1,7 @@
 from sqlalchemy import exc
 
+from sqlalchemy import DateTime, Column, func
+
 from cross_stitch_tasks.api.app import db
 from cross_stitch_tasks.env_vars import DB_SCHEMA
 
@@ -7,6 +9,7 @@ from cross_stitch_tasks.env_vars import DB_SCHEMA
 class BaseModel(db.Model):  # type: ignore
     __abstract__ = True
     base_table_args = {"schema": DB_SCHEMA}
+    time_stamp = Column(DateTime(), nullable=False, default=func.now(), comment="Момент записи данных")
 
     def __init__(self, *args: object, **kwargs: object) -> None:
         super().__init__(*args, **kwargs)
