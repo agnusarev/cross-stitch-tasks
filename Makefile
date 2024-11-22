@@ -12,3 +12,7 @@ linting:
 .PHONY: mypy
 mypy:
 	poetry run mypy src
+
+.PHONY: run
+run:
+	poetry run py src/cross_stitch_tasks/api/run.py
