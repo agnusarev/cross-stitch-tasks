@@ -13,30 +13,40 @@
         <td>SECRET_KEY</td><td></td>
     </tr>
     <tr>
-        <td>POSTGRES_DB</td><td></td>
+        <td>DIALECT</td><td></td>
     </tr>
     <tr>
-        <td>POSTGRES_USER</td><td></td>
+        <td>DRIVER</td><td></td>
     </tr>
     <tr>
-        <td>POSTGRES_PASSWORD</td><td></td>
+        <td>DB_NAME</td><td></td>
     </tr>
     <tr>
-        <td>POSTGRES_HOST</td><td></td>
+        <td>DB_USER</td><td></td>
     </tr>
     <tr>
-        <td>POSTGRES_PORT</td><td></td>
+        <td>DB_PASSWORD</td><td></td>
     </tr>
     <tr>
-        <td>POSTGRES_SCHEMA</td><td></td>
+        <td>DB_HOST</td><td></td>
+    </tr>
+    <tr>
+        <td>DB_PORT</td><td></td>
+    </tr>
+    <tr>
+        <td>DB_SCHEMA</td><td></td>
     </tr>
 </table>
 
 # installation
-TODO
+```bash
+poetry install
+```
 
 # run
-TODO
+```bash
+make run
+```
 
 # tests
 TODO
