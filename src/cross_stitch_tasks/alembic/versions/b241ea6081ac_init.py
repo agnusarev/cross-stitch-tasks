@@ -10,6 +10,7 @@ from typing import Sequence, Union
 
 import sqlalchemy as sa
 from alembic import op
+from sqlalchemy.dialects import postgresql
 
 from cross_stitch_tasks.env_vars import DB_SCHEMA
 
@@ -26,7 +27,7 @@ def upgrade() -> None:
         "types_of_base",
         sa.Column("id", sa.INTEGER(), autoincrement=True, nullable=False, comment="Идентификатор вида основы"),
         sa.Column("type_of_base", sa.VARCHAR(length=100), nullable=True, comment="Тип основы"),
-        sa.Column("time_stamp", sa.DateTime(), nullable=False, comment="Момент записи данных"),
+        sa.Column("time_stamp", postgresql.TIMESTAMP(timezone=True), nullable=False, comment="Момент записи данных"),
         sa.PrimaryKeyConstraint("id"),
         schema=DB_SCHEMA,
     )
@@ -34,7 +35,7 @@ def upgrade() -> None:
         "types_of_image",
         sa.Column("id", sa.INTEGER(), autoincrement=True, nullable=False, comment="Идентификатор типа изображения"),
         sa.Column("type_of_base", sa.VARCHAR(length=100), nullable=True, comment="Тип изображения"),
-        sa.Column("time_stamp", sa.DateTime(), nullable=False, comment="Момент записи данных"),
+        sa.Column("time_stamp", postgresql.TIMESTAMP(timezone=True), nullable=False, comment="Момент записи данных"),
         sa.PrimaryKeyConstraint("id"),
         schema=DB_SCHEMA,
     )
@@ -42,7 +43,7 @@ def upgrade() -> None:
         "users",
         sa.Column("id", sa.INTEGER(), autoincrement=True, nullable=False, comment="Идентификатор пользователя"),
         sa.Column("email", sa.VARCHAR(length=100), nullable=True, comment="Email пользователя"),
-        sa.Column("time_stamp", sa.DateTime(), nullable=False, comment="Момент записи данных"),
+        sa.Column("time_stamp", postgresql.TIMESTAMP(timezone=True), nullable=False, comment="Момент записи данных"),
         sa.PrimaryKeyConstraint("id"),
         schema=DB_SCHEMA,
     )
@@ -62,7 +63,7 @@ def upgrade() -> None:
         sa.Column("type_of_base_id", sa.INTEGER(), nullable=True, comment="Вид основы"),
         sa.Column("type_of_image_id", sa.INTEGER(), nullable=True, comment="Тип изображения"),
         sa.Column("user_id", sa.INTEGER(), nullable=True, comment="Пользователь"),
-        sa.Column("time_stamp", sa.DateTime(), nullable=False, comment="Момент записи данных"),
+        sa.Column("time_stamp", postgresql.TIMESTAMP(timezone=True), nullable=False, comment="Момент записи данных"),
         sa.ForeignKeyConstraint(
             ["type_of_base_id"],
             [f"{DB_SCHEMA}.types_of_base.id"],
