@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+    <head>
+      {% if title %}
+      <title>{{ title }} - Cross stitch tasks</title>
+      {% else %}
+      <title>Добро пожаловать в менеджер заданий для вышивки</title>
+      {% endif %}
+    </head>
+    <body>
+        <div>Cross stitch tasks: <a href="/type">Создать новый тип основы</a></div>
+        <div>Cross stitch tasks: <a href="/image">Создать новый тип избражения</a></div>
+        <hr>
+        {% block content %}{% endblock %}
+    </body>
+</html>

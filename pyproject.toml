@@ -14,6 +14,7 @@ flask = "^3.1.0"
 flask-sqlalchemy = "^3.1.1"
 alembic = "^1.14.0"
 psycopg2 = "^2.9.10"
+flask-wtf = "^1.2.2"
 
 
 [tool.poetry.group.dev.dependencies]

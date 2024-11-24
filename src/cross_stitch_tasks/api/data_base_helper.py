@@ -1,9 +1,11 @@
 from typing import Optional
 
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.engine.base import Engine
-from flask_sqlalchemy import SQLAlchemy
-from flask import Flask
+
+# from cross_stitch_tasks.api.models import TypeOfBase
 
 
 class DataBaseHelper:
