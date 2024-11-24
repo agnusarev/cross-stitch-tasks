@@ -10,7 +10,7 @@ from cross_stitch_tasks.api.models import TypeOfImage
 
 
 class TypeOfImageForm(FlaskForm):
-    type = StringField("TypeOfImage", validators=[DataRequired()])
+    type = StringField("Добавить новый тип изображения", validators=[DataRequired()])
 
 
 class TypeOfImageView(MethodView):

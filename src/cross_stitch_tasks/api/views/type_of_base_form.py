@@ -10,7 +10,7 @@ from cross_stitch_tasks.api.models import TypeOfBase
 
 
 class TypeOfBaseForm(FlaskForm):
-    type = StringField("TypeOfBase", validators=[DataRequired()])
+    type = StringField("Добавить новый тип основы", validators=[DataRequired()])
 
 
 class TypeOfBaseView(MethodView):
