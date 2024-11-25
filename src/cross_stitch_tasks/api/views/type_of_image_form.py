@@ -1,12 +1,9 @@
-from typing import Any
-
 from flask import render_template, request
 from flask.views import MethodView
 from flask_wtf import FlaskForm
 from wtforms import StringField
 from wtforms.validators import DataRequired
-from cross_stitch_tasks.api.app import db
-from cross_stitch_tasks.api.models import TypeOfImage
+from cross_stitch_tasks.api.app import crud
 
 
 class TypeOfImageForm(FlaskForm):
@@ -14,13 +11,13 @@ class TypeOfImageForm(FlaskForm):
 
 
 class TypeOfImageView(MethodView):
-    def get(self) -> Any:
+    def get(self) -> str:
         form = TypeOfImageForm()
 
         return render_template("image_form.html", title="Добавить тип изображения", form=form)
 
-    def post(self) -> Any:
-        _type = request.form.get("type")
-        db.session.add(TypeOfImage(type_of_image=_type))
-        db.session.commit()
+    def post(self) -> str:
+        params = dict()
+        params["type_of_image"] = request.form.get("type")
+        crud.insert(table_name="types_of_image", params=params)
         return render_template("base.html", title="Home")

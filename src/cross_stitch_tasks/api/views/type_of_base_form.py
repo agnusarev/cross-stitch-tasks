@@ -1,12 +1,9 @@
-from typing import Any
-
 from flask import render_template, request
 from flask.views import MethodView
 from flask_wtf import FlaskForm
 from wtforms import StringField
 from wtforms.validators import DataRequired
-from cross_stitch_tasks.api.app import db
-from cross_stitch_tasks.api.models import TypeOfBase
+from cross_stitch_tasks.api.app import crud
 
 
 class TypeOfBaseForm(FlaskForm):
@@ -14,13 +11,13 @@ class TypeOfBaseForm(FlaskForm):
 
 
 class TypeOfBaseView(MethodView):
-    def get(self) -> Any:
+    def get(self) -> str:
         form = TypeOfBaseForm()
 
         return render_template("type_form.html", title="Добавить тип основы", form=form)
 
-    def post(self) -> Any:
-        _type = request.form.get("type")
-        db.session.add(TypeOfBase(type_of_base=_type))
-        db.session.commit()
+    def post(self) -> str:
+        params = dict()
+        params["type_of_base"] = request.form.get("type")
+        crud.insert(table_name="types_of_base", params=params)
         return render_template("base.html", title="Home")
