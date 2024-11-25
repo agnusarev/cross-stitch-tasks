@@ -1,9 +1,10 @@
 from functools import cached_property
-from typing import List, Optional, Type, TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Optional, Type
 
+import pandas as pd
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import create_engine, exc, insert
+from sqlalchemy import create_engine, exc, insert, select
 from sqlalchemy.engine.base import Engine
 
 from cross_stitch_tasks.api.errors import ReadDBException
@@ -90,3 +91,24 @@ class DataBaseHelper:
             self.db.engine.dispose()
             raise
         return
+
+    def get_actual_table(self, table_name: str) -> pd.DataFrame:
+        """Общий читатель из БД, возвращает датафрейм.
+
+        Parameters
+        ----------
+        table_name : str
+            Имя таблицы.
+
+        Returns
+        -------
+        pd.DataFrame
+            Датафррейм.
+        """
+        _model = self.get_model_by_table_name(table_name)
+        stmt = select(_model)
+        df = pd.read_sql(stmt, self.db.session.connection())
+        df = df.drop(columns=["time_stamp"], axis=1)
+        if df.empty:
+            raise ReadDBException(f"Запрашивамая таблица {table_name} пуста.")
+        return df

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Добавить работу</h1>
+<form action="" method="post" novalidate>
+  {{ form.hidden_tag() }}
+  <p>
+    {{ form.length_in_cm.label }}<br>
+    {{ form.length_in_cm(size=100) }}
+  </p>
+  <p>
+    {{ form.width_in_cm.label }}<br>
+    {{ form.width_in_cm(size=100) }}
+  </p>
+  <p>
+    {{ form.length_in_crosses.label }}<br>
+    {{ form.length_in_crosses(size=100) }}
+  </p>
+  <p>
+    {{ form.width_in_crosses.label }}<br>
+    {{ form.width_in_crosses(size=100) }}
+  </p>
+  <p>
+    {{ form.number_of_crosses.label }}<br>
+    {{ form.number_of_crosses(size=100) }}
+  </p>
+  <p>
+    {{ form.number_of_half_crosses.label }}<br>
+    {{ form.number_of_half_crosses(size=100) }}
+  </p>
+  <p>
+    {{ form.number_of_backstitch.label }}<br>
+    {{ form.number_of_backstitch(size=100) }}
+  </p>
+  <p>
+    {{ form.number_of_remaining_stitches.label }}<br>
+    {{ form.number_of_remaining_stitches(size=100) }}
+  </p>
+  <p>
+    {{ form.number_of_colors.label }}<br>
+    {{ form.number_of_colors(size=100) }}
+  </p>
+  <p>
+    {{ form.number_of_blends.label }}<br>
+    {{ form.number_of_blends(size=100) }}
+  </p>
+  <p>
+    {{ form.type_of_base_id.label }}<br>
+    {{ form.type_of_base_id(size=10) }}
+  </p>
+  <p>
+    {{ form.type_of_image_id.label }}<br>
+    {{ form.type_of_image_id(size=10) }}
+  </p>
+  <input type="submit" value="Отправить">
+</form>
+{% endblock %}
