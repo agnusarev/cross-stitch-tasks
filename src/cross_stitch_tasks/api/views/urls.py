@@ -11,7 +11,7 @@ def url(api_instance: Any, api_url: str, name: str) -> Tuple[Type[Any], str, str
 
 
 urls = [
-    url(start.StartApp.as_view("/"), "/", "/"),
+    url(start.StartApp.as_view("/"), "/", "index"),
     url(type_of_base_form.TypeOfBaseView.as_view("/type/"), "/type/", "type"),
     url(type_of_image_form.TypeOfImageView.as_view("/image/"), "/image/", "image"),
     url(jobs_form.JobView.as_view("/job/"), "/job/", "job"),
