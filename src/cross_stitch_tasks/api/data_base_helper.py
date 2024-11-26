@@ -106,9 +106,10 @@ class DataBaseHelper:
             Датафррейм.
         """
         _model = self.get_model_by_table_name(table_name)
-        stmt = select(_model)
-        df = pd.read_sql(stmt, self.db.session.connection())
-        df = df.drop(columns=["time_stamp"], axis=1)
-        if df.empty:
+        stmt = select(_model.__table__.columns)
+        result = self.db.session.execute(stmt)
+        result_as_df = pd.DataFrame.from_records(result.fetchall(), columns=result.keys())
+        result_as_df = result_as_df.drop(columns=["time_stamp"], axis=1)
+        if result_as_df.empty:
             raise ReadDBException(f"Запрашивамая таблица {table_name} пуста.")
-        return df
+        return result_as_df
