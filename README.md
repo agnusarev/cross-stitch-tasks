@@ -17,7 +17,7 @@
         <td>DIALECT</td><td>postgresql</td><td>Диалект языка SQL для подключения к БД</td>
     </tr>
     <tr>
-        <td>DRIVER</td><td>db</td><td>драйвер для подключения к БД</td>
+        <td>DRIVER</td><td>psycopg2</td><td>драйвер для подключения к БД</td>
     </tr>
     <tr>
         <td>DB_NAME</td><td></td><td>имя БД</td>
