@@ -78,5 +78,6 @@ jobs:
 
       - name: Run test
         run: |
+            sudo ln -s /tmp/.s.PGSQL.5432 /var/run/postgresql/.s.PGSQL.5432
             make test
     
