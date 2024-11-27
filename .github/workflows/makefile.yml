@@ -78,6 +78,6 @@ jobs:
 
       - name: Run test
         run: |
-            sudo ln -s /tmp/.s.PGSQL.5432 /var/run/postgresql/.s.PGSQL.5432
+            apt-get update -qq && apt-get install
             make test
     
