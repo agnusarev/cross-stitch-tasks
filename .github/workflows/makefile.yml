@@ -78,6 +78,6 @@ jobs:
 
       - name: Run test
         run: |
-            apt-get update -qq && apt-get install
+            sudo apt-get update -qq && apt-get install --no-install-recommends -y -qq postgresql &> /dev/null
             make test
     
