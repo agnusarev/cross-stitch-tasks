@@ -78,6 +78,7 @@ jobs:
 
       - name: Run test
         run: |
-            sudo apt-get update -qq && apt-get install --no-install-recommends -y -qq postgresql &> /dev/null
+            apt-get update
+            apt-get install --yes postgresql
             make test
     
