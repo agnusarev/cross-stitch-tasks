@@ -1,7 +1,7 @@
 # Makefile
 .PHONY: test
 test:
-	poetry run pytest tests/
+	poetry run pytest --disable-socket tests/
 
 .PHONY: linting
 linting:
