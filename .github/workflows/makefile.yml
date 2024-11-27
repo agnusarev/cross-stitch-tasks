@@ -44,8 +44,8 @@ jobs:
         image: postgres:latest
         env:
           POSTGRES_DB: ${{ secrets.TEST_DB_NAME }}        
-          POSTGRES_PASSWORD: ${{ secrets.TEST_DB_USER }}  
-          POSTGRES_USER: ${{ secrets.TEST_DB_PASSWORD }} 
+          POSTGRES_USER: ${{ secrets.TEST_DB_USER }}  
+          POSTGRES_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
         ports:
           - 5432:5432
         # Set health checks to wait until postgres has started
@@ -60,6 +60,16 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+        env:
+          TEST_DB_NAME: ${{ secrets.TEST_DB_NAME }}        
+          TEST_DB_USER: ${{ secrets.TEST_DB_USER }}  
+          TEST_DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
+          TEST_SECRET_KEY: ${{ secrets.TEST_SECRET_KEY }}
+          TEST_DIALECT: ${{ secrets.TEST_DIALECT }}
+          TEST_DRIVER: ${{ secrets.TEST_DRIVER }} 
+          TEST_DB_HOST: ${{ secrets.TEST_DB_HOST }} 
+          TEST_DB_PORT: ${{ secrets.TEST_DB_PORT }} 
+          TEST_DB_SCHEMA: ${{ secrets.TEST_DB_SCHEMA }} 
         
       - name: Install dependencies
         run: |
