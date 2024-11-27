@@ -16,6 +16,7 @@ alembic = "^1.14.0"
 psycopg2 = "^2.9.10"
 flask-wtf = "^1.2.2"
 pandas = "^2.2.3"
+flask-migrate = "^4.0.7"
 
 
 [tool.poetry.group.dev.dependencies]
