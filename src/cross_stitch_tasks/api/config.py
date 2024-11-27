@@ -8,5 +8,6 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = f"{DIALECT}+{DRIVER}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     SQLALCHEMY_ENGINE_OPTIONS = {
         "echo": False,
+        "pool_pre_ping": True,
         "connect_args": {"options": f"-c timezone=utc -csearch_path={DB_SCHEMA}"},
     }
