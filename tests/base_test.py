@@ -61,12 +61,14 @@ class BaseTest:
 
     @pytest.fixture(scope="class")
     def define_params(self) -> None:
+        import cross_stitch_tasks.env_vars as env_vars
         from cross_stitch_tasks.api.config import Config
 
         Config.SQLALCHEMY_DATABASE_URI = self.sqlalchemy_database_uri
         Config.SQLALCHEMY_ENGINE_OPTIONS["connect_args"] = {
             "options": f"-c timezone=utc -csearch_path={self.test_db_schema}"
         }
+        env_vars.DB_SCHEMA = self.test_db_schema
 
     @pytest.fixture(scope="class")
     def app(self, define_params: Never, db_healthcheck: Never) -> Any:
