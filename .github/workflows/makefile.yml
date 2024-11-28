@@ -65,7 +65,7 @@ jobs:
       TEST_DRIVER: ${{ secrets.TEST_DRIVER }} 
       TEST_DB_HOST: ${{ secrets.TEST_DB_HOST }} 
       TEST_DB_PORT: ${{ secrets.TEST_DB_PORT }} 
-      TEST_DB_SCHEMA: ${{ secrets.TEST_DB_SCHEMA }} 
+      TEST_DB_SCHEMA: main
     steps:
       - uses: actions/checkout@main
       - name: Set up Python ${{ matrix.python-version }}
