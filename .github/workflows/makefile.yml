@@ -47,6 +47,7 @@ jobs:
           POSTGRES_USER: ${{ secrets.TEST_DB_USER }}  
           POSTGRES_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
           POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_SCHEMA: ${{ secrets.TEST_DB_SCHEMA }}
         ports:
           - 5432:5432
         # Set health checks to wait until postgres has started
