@@ -21,7 +21,7 @@ class BaseTest:
     test_db_password = os.getenv("TEST_DB_PASSWORD")
     test_db_host = os.getenv("TEST_DB_HOST")
     test_db_port = os.getenv("TEST_DB_PORT")
-    test_db_schema = os.getenv("TEST_DB_SCHEMA")
+    test_db_schema = os.getenv("TEST_DB_SCHEMA", "main")
     test_dialect = os.getenv("TEST_DIALECT")
     test_driver = os.getenv("TEST_DRIVER")
     test_secret_key = os.getenv("TEST_SECRET_KEY")
