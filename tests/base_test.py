@@ -1,7 +1,7 @@
 import logging
 import os
 import time
-from typing import Any, Never, TYPE_CHECKING
+from typing import Any
 
 import pytest
 from dotenv import load_dotenv
@@ -25,7 +25,7 @@ class BaseTest:
     test_dialect = os.getenv("TEST_DIALECT")
     test_driver = os.getenv("TEST_DRIVER")
     test_secret_key = os.getenv("TEST_SECRET_KEY")
-    sqlalchemy_database_uri = (
+    sqlalchemy_database = (
         f"{test_dialect}+{test_driver}://"
         f"{test_db_user}:{test_db_password}@"
         f"{test_db_host}:{test_db_port}/"
@@ -64,26 +64,23 @@ class BaseTest:
         import cross_stitch_tasks.env_vars as env_vars
         from cross_stitch_tasks.api.config import Config
 
-        Config.SQLALCHEMY_DATABASE_URI = self.sqlalchemy_database_uri
+        Config.SQLALCHEMY_DATABASE_URI = self.sqlalchemy_database
         Config.SQLALCHEMY_ENGINE_OPTIONS["connect_args"] = {
             "options": f"-c timezone=utc -csearch_path={self.test_db_schema}"
         }
         env_vars.DB_SCHEMA = self.test_db_schema
 
     @pytest.fixture(scope="class")
-    def app(self, define_params: Never, db_healthcheck: Never) -> Any:
+    def app(self, define_params, db_healthcheck) -> Any:  # type: ignore
         """
         Фикстура для создания инстанса приложения Flask и настройки переменных.
         """
-        if TYPE_CHECKING:
-            print(define_params)
-            print(db_healthcheck)
         from cross_stitch_tasks.api.app import create_app
 
         test_config = {
             "TESTING": True,
             "DB_SCHEMA": self.test_db_schema,
-            "SQLALCHEMY_DATABASE_URI": self.sqlalchemy_database_uri,
+            "SQLALCHEMY_DATABASE_URI": self.sqlalchemy_database,
             "SECRET_KEY": self.test_secret_key,
         }
         app = create_app(test_config)
@@ -110,6 +107,8 @@ class BaseTest:
 
         yield crud
 
+        crud.db.session.close()
+        crud.db.engine.dispose()
         with crud.db.engine.connect() as conn:
             conn.execute(text(f"DROP SCHEMA IF EXISTS {self.test_db_schema} CASCADE;"))
             conn.commit()
