@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Список типов основы</h1>
+{% for type in types %}
+<div>
+    <p>{{ type.type_of_base}}</p>
+</div>
+{% endfor %}
+{% endblock %}

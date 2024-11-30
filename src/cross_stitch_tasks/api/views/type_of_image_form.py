@@ -22,4 +22,11 @@ class TypeOfImageView(MethodView):
         params = dict()
         params["type_of_image"] = request.form.get("type")
         crud.insert(table_name="types_of_image", params=params)
-        return redirect(url_for("index"), code=201)
+        return redirect(url_for("index"), code=302)
+
+
+class TypeOfImage(MethodView):
+    def get(self) -> str:
+        images = crud.get_actual_table("types_of_image").to_dict("records")
+
+        return render_template("image_list.html", title="Список тип изображений", images=images)

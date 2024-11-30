@@ -22,4 +22,11 @@ class TypeOfBaseView(MethodView):
         params = dict()
         params["type_of_base"] = request.form.get("type")
         crud.insert(table_name="types_of_base", params=params)
-        return redirect(url_for("index"), code=201)
+        return redirect(url_for("types_list"), code=302)
+
+
+class TypeOfBase(MethodView):
+    def get(self) -> str:
+        types = crud.get_actual_table("types_of_base").to_dict("records")
+
+        return render_template("type_list.html", title="Список тип основы", types=types)
