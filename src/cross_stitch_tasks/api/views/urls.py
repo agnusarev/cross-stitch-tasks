@@ -17,4 +17,5 @@ urls = [
     url(type_of_image_form.TypeOfImageView.as_view("/image/"), "/image/", "image"),
     url(type_of_image_form.TypeOfImage.as_view("/images_list/"), "/images_list/", "images_list"),
     url(jobs_form.JobView.as_view("/job/"), "/job/", "job"),
+    url(jobs_form.Job.as_view("/job_list/"), "/job_list/", "job_list"),
 ]

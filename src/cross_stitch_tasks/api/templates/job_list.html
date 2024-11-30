@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Список работ</h1>
+
+<table>
+    {% for job in jobs %}
+    <tr>
+        <th>{{job.length_in_cm}}</th>
+        <th>{{job.width_in_cm}}</th>
+        <th>{{job.length_in_crosses}}</th>
+        <th>{{job.width_in_crosses}}</th>
+        <th>{{job.number_of_crosses}}</th>
+        <th>{{job.number_of_half_crosses}}</th>
+        <th>{{job.number_of_backstitch}}</th>
+        <th>{{job.number_of_remaining_stitches}}</th>
+        <th>{{job.number_of_colors}}</th>
+        <th>{{job.number_of_blends}}</th>
+        <th>{{job.is_active}}</th>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

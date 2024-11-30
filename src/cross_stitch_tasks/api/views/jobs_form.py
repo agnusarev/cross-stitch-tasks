@@ -45,3 +45,10 @@ class JobView(MethodView):
         params["is_active"] = True  # type: ignore
         crud.insert(table_name="jobs", params=params)
         return render_template("base.html", title="Home")
+
+
+class Job(MethodView):
+    def get(self) -> str:
+        jobs = crud.get_actual_table("jobs").to_dict("records")
+
+        return render_template("job_list.html", title="Список работ", jobs=jobs)
