@@ -4,7 +4,7 @@ from cross_stitch_tasks.api.data_base_helper import DataBaseHelper
 from tests.base_test import BaseTest
 
 
-class TestCommon(BaseTest):
+class TestDataBaseHelper(BaseTest):
 
     def test_insert_types_of_base(self, crud: "DataBaseHelper") -> None:
         expected = pd.DataFrame.from_dict({"id": [1, 2], "type_of_base": ["пластик", "дерево"]})
