@@ -41,7 +41,7 @@ jobs:
         python-version: ["3.12"]
     services:
       postgres:
-        image: postgres:latest
+        image: postgres:16
         env:
           POSTGRES_DB: ${{ secrets.TEST_DB_NAME }}        
           POSTGRES_USER: ${{ secrets.TEST_DB_USER }}  
