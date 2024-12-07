@@ -1,6 +1,7 @@
-from flask import render_template, request
+from flask import redirect, render_template, request, url_for
 from flask.views import MethodView
 from flask_wtf import FlaskForm
+from werkzeug.wrappers.response import Response
 from wtforms import IntegerField, SelectField
 from wtforms.validators import DataRequired
 
@@ -38,13 +39,13 @@ class JobView(MethodView):
 
         return render_template("jobs_form.html", title="Добавить работу", form=form)
 
-    def post(self) -> str:
+    def post(self) -> Response:
         params = dict()
         params = request.form.to_dict()
         params.pop("csrf_token", None)
         params["is_active"] = True  # type: ignore
         crud.insert(table_name="jobs", params=params)
-        return render_template("base.html", title="Home")
+        return redirect(url_for("job_list"), code=302)
 
 
 class Job(MethodView):
