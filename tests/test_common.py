@@ -7,7 +7,7 @@ from cross_stitch_tasks.api.models import Jobs, TypeOfBase, TypeOfImage
 from tests.base_test import BaseTest
 
 
-class TestDataBaseHelper(BaseTest):
+class TestCommon(BaseTest):
 
     def test_insert(self, crud: "DataBaseHelper") -> None:
         type_of_base_dict = {"type_of_base": "пластик"}
@@ -45,7 +45,7 @@ class TestDataBaseHelper(BaseTest):
 
         pd.testing.assert_frame_equal(expected, test_df)
 
-    def test_forms(self, get_client_: "Flask") -> None:
+    def test_get_forms(self, get_client_: "Flask") -> None:
         response = get_client_.get("/type")
         assert response.status_code == 200  # type: ignore
 
@@ -54,3 +54,30 @@ class TestDataBaseHelper(BaseTest):
 
         response = get_client_.get("/job")
         assert response.status_code == 200  # type: ignore
+
+    def test_forms(self, get_client_: "Flask") -> None:
+        response = get_client_.post("/type", data={"type": "дерево"})
+        assert response.status_code == 302  # type: ignore
+
+        response = get_client_.post("/image", data={"type": "лето"})
+        assert response.status_code == 302  # type: ignore
+
+        response = get_client_.post(
+            "/job",
+            data={
+                "length_in_cm": 30,
+                "width_in_cm": 30,
+                "length_in_crosses": 310,
+                "width_in_crosses": 310,
+                "number_of_crosses": 420,
+                "number_of_half_crosses": 420,
+                "number_of_backstitch": 500,
+                "number_of_remaining_stitches": 500,
+                "number_of_colors": 25,
+                "number_of_blends": 15,
+                "is_active": True,
+                "type_of_base_id": 1,
+                "type_of_image_id": 1,
+            },
+        )
+        assert response.status_code == 302  # type: ignore
