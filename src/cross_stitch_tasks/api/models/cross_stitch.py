@@ -14,19 +14,19 @@ from cross_stitch_tasks.api.models.base_model import BaseModel
 
 class TypeOfBase(BaseModel):
     __tablename__ = "types_of_base"
-    id = Column(INTEGER(), primary_key=True, unique=True, comment="Идентификатор вида основы")
+    id = Column(INTEGER(), primary_key=True, autoincrement=True, unique=True, comment="Идентификатор вида основы")
     type_of_base = Column(VARCHAR(100), nullable=False, comment="Тип основы")
 
 
 class TypeOfImage(BaseModel):
     __tablename__ = "types_of_image"
-    id = Column(INTEGER(), primary_key=True, unique=True, comment="Идентификатор типа изображения")
+    id = Column(INTEGER(), primary_key=True, autoincrement=True, unique=True, comment="Идентификатор типа изображения")
     type_of_image = Column(VARCHAR(100), nullable=False, comment="Тип изображения")
 
 
 class Jobs(BaseModel):
     __tablename__ = "jobs"
-    id = Column(INTEGER(), primary_key=True, unique=True, comment="Идентификатор работы")
+    id = Column(INTEGER(), primary_key=True, autoincrement=True, unique=True, comment="Идентификатор работы")
     length_in_cm = Column(INTEGER(), nullable=False, comment="Длина работы в сантиметрах")
     width_in_cm = Column(INTEGER(), nullable=False, comment="Ширина работы в сантиметрах")
     length_in_crosses = Column(INTEGER(), nullable=False, comment="Длина работы в крестиках")
@@ -71,7 +71,7 @@ class Jobs(BaseModel):
 
 class Processes(BaseModel):
     __tablename__ = "processes"
-    id = Column(INTEGER(), primary_key=True, unique=True, comment="Идентификатор процесса")
+    id = Column(INTEGER(), primary_key=True, unique=True, autoincrement=True, comment="Идентификатор процесса")
     job_id = Column(INTEGER(), ForeignKey("jobs.id"), primary_key=True, unique=True, comment="Идентификатор работы")
     number_of_crosses = Column(INTEGER(), nullable=True, comment="Текущее количество вышитых крестиков")
     number_of_half_crosses = Column(INTEGER(), nullable=True, comment="Текущее количество вышитых полукрестиков")
