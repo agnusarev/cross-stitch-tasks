@@ -31,6 +31,7 @@ class TypeOfImage(BaseModel):
 class Jobs(BaseModel):
     __tablename__ = "jobs"
     id = Column(INTEGER(), primary_key=True, autoincrement=True, unique=True, comment="Идентификатор работы")
+    name = Column(VARCHAR(200), nullable=False, comment="Название работы")
     length_in_cm = Column(INTEGER(), nullable=False, comment="Длина работы в сантиметрах")
     width_in_cm = Column(INTEGER(), nullable=False, comment="Ширина работы в сантиметрах")
     length_in_crosses = Column(INTEGER(), nullable=False, comment="Длина работы в крестиках")
@@ -54,10 +55,12 @@ class Processes(BaseModel):
     __tablename__ = "processes"
     id = Column(INTEGER(), primary_key=True, unique=True, autoincrement=True, comment="Идентификатор процесса")
     job_id = Column(INTEGER(), ForeignKey("jobs.id"), primary_key=True, comment="Идентификатор работы")
-    number_of_crosses = Column(INTEGER(), nullable=True, comment="Текущее количество вышитых крестиков")
-    number_of_half_crosses = Column(INTEGER(), nullable=True, comment="Текущее количество вышитых полукрестиков")
-    number_of_backstitch = Column(INTEGER(), nullable=True, comment="Текущее количество вышитого бэкстича")
-    number_of_remaining_stitches = Column(
-        INTEGER(), nullable=True, comment="Текущее количество вышитых остальных стежков"
+    number_of_crosses = Column(INTEGER(), nullable=True, default=0, comment="Текущее количество вышитых крестиков")
+    number_of_half_crosses = Column(
+        INTEGER(), nullable=True, default=0, comment="Текущее количество вышитых полукрестиков"
     )
-    is_active = Column(BOOLEAN(), nullable=False, comment="Флаг активности процесса")  # type: ignore
+    number_of_backstitch = Column(INTEGER(), nullable=True, default=0, comment="Текущее количество вышитого бэкстича")
+    number_of_remaining_stitches = Column(
+        INTEGER(), nullable=True, default=0, comment="Текущее количество вышитых остальных стежков"
+    )
+    is_active = Column(BOOLEAN(), nullable=False, default=True, comment="Флаг активности процесса")  # type: ignore

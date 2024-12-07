@@ -2,13 +2,14 @@ from flask import redirect, render_template, request, url_for
 from flask.views import MethodView
 from flask_wtf import FlaskForm
 from werkzeug.wrappers.response import Response
-from wtforms import IntegerField, SelectField
+from wtforms import IntegerField, SelectField, TextAreaField
 from wtforms.validators import DataRequired
 
 from cross_stitch_tasks.api.app import crud
 
 
 class JobsForm(FlaskForm):
+    name = TextAreaField("Название работы", validators=[DataRequired()])
     length_in_cm = IntegerField("Длина работы в сантиметрах", validators=[DataRequired()])
     width_in_cm = IntegerField("Ширина работы в сантиметрах", validators=[DataRequired()])
     length_in_crosses = IntegerField("Длина работы в крестиках", validators=[DataRequired()])
@@ -45,11 +46,21 @@ class JobView(MethodView):
         params.pop("csrf_token", None)
         params["is_active"] = True  # type: ignore
         crud.insert(table_name="jobs", params=params)
+        last_job = int(crud.get_actual_table("jobs")["id"].max())
+        # когда добавляется работа, создаем пустой процесс к ней
+        crud.insert(table_name="processes", params={"job_id": last_job})
         return redirect(url_for("job_list"), code=302)
 
 
 class Job(MethodView):
     def get(self) -> str:
-        jobs = crud.get_actual_table("jobs").to_dict("records")
+        types = crud.get_actual_table("types_of_base")
+        images = crud.get_actual_table("types_of_image")
+        jobs = crud.get_actual_table("jobs")
+
+        jobs = jobs.merge(types, left_on="type_of_base_id", right_on="id")
+        jobs = jobs.merge(images, left_on="type_of_image_id", right_on="id")
+
+        jobs = jobs.to_dict("records")
 
         return render_template("job_list.html", title="Список работ", jobs=jobs)

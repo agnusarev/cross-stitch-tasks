@@ -21,6 +21,7 @@ class TestCommon(BaseTest):
         assert _type_of_image == type_of_image_dict["type_of_image"]
 
         jobs_dict = {
+            "name": "Собака на сене",
             "length_in_cm": 20,
             "width_in_cm": 20,
             "length_in_crosses": 30,
@@ -65,6 +66,7 @@ class TestCommon(BaseTest):
         response = get_client_.post(
             "/job",
             data={
+                "name": "Супермен",
                 "length_in_cm": 30,
                 "width_in_cm": 30,
                 "length_in_crosses": 310,

@@ -43,6 +43,7 @@ def upgrade() -> None:
     op.create_table(
         "jobs",
         sa.Column("id", sa.INTEGER(), autoincrement=True, nullable=False, comment="Идентификатор работы"),
+        sa.Column("name", sa.VARCHAR(length=200), nullable=False, comment="Название работы"),
         sa.Column("length_in_cm", sa.INTEGER(), nullable=False, comment="Длина работы в сантиметрах"),
         sa.Column("width_in_cm", sa.INTEGER(), nullable=False, comment="Ширина работы в сантиметрах"),
         sa.Column("length_in_crosses", sa.INTEGER(), nullable=False, comment="Длина работы в крестиках"),

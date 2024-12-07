@@ -4,8 +4,25 @@
 <h1>Список работ</h1>
 
 <table border="1px">
+    <tr>
+        <th>Название работы</th>
+        <th>Длина работы в сантиметрах</th>
+        <th>Ширина работы в сантиметрах</th>
+        <th>Длина работы в крестиках</th>
+        <th>Ширина работы в крестиках</th>
+        <th>Количество только крестиков</th>
+        <th>Количество полукрестиков</th>
+        <th>Количество бэкстича</th>
+        <th>Количество остальных стежков</th>
+        <th>Количество цветов в работе</th>
+        <th>Количество блендов в работе</th>
+        <th>Флаг активности работы</th>
+        <th>Тип основы</th>
+        <th>Тип изображения</th>
+    </tr>
     {% for job in jobs %}
     <tr>
+        <th>{{job.name}}</th>
         <th>{{job.length_in_cm}}</th>
         <th>{{job.width_in_cm}}</th>
         <th>{{job.length_in_crosses}}</th>
@@ -17,6 +34,8 @@
         <th>{{job.number_of_colors}}</th>
         <th>{{job.number_of_blends}}</th>
         <th>{{job.is_active}}</th>
+        <th>{{job.type_of_base}}</th>
+        <th>{{job.type_of_image}}</th>
     </tr>
     {% endfor %}
 </table>
