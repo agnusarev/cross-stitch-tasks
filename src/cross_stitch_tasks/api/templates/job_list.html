@@ -22,7 +22,7 @@
     </tr>
     {% for job in jobs %}
     <tr>
-        <th>{{job.name}}</th>
+        <th><a href="{{ url_for('processes', id=job.id)}}"> {{job.name}} </a></th>
         <th>{{job.length_in_cm}}</th>
         <th>{{job.width_in_cm}}</th>
         <th>{{job.length_in_crosses}}</th>

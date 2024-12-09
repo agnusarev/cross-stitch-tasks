@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Скорректировать процесс</h1>
+<form action="" method="post" novalidate>
+  {{ form.hidden_tag() }}
+  <p>
+    {{ form.number_of_crosses.label }}<br>
+    {{ form.number_of_crosses(size=100) }}
+  </p>
+  <p>
+    {{ form.number_of_half_crosses.label }}<br>
+    {{ form.number_of_half_crosses(size=100) }}
+  </p>
+  <p>
+    {{ form.number_of_backstitch.label }}<br>
+    {{ form.number_of_backstitch(size=100) }}
+  </p>
+  <p>
+    {{ form.number_of_remaining_stitches.label }}<br>
+    {{ form.number_of_remaining_stitches(size=100) }}
+  </p>
+  <input type="submit" value="Сохранить">
+</form>
+{% endblock %}
