@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, List, Optional, Type
 import pandas as pd
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import create_engine, exc, insert, select
+from sqlalchemy import create_engine, exc, insert, select, update
 from sqlalchemy.engine.base import Engine
 
 from cross_stitch_tasks.api.errors import ReadDBException
@@ -113,3 +113,16 @@ class DataBaseHelper:
         if result_as_df.empty:
             raise ReadDBException(f"Запрашивамая таблица {table_name} пуста.")
         return result_as_df
+
+    def update(self, table_name: str, id: int, params: dict) -> None:
+        _model = self.get_model_by_table_name(table_name)
+        stmt = update(_model).where(_model.id == id).values(**params)
+        try:
+            self.db.session.execute(stmt)
+            self.db.session.commit()
+        except exc.SQLAlchemyError:
+            self.db.session.rollback()
+            self.db.session.close()
+            self.db.engine.dispose()
+            raise
+        return
