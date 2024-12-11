@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, List, Optional, Type
 import pandas as pd
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import create_engine, exc, insert, select, update
+from sqlalchemy import create_engine, delete, exc, insert, select, update
 from sqlalchemy.engine.base import Engine
 
 from cross_stitch_tasks.api.errors import ReadDBException
@@ -122,12 +122,34 @@ class DataBaseHelper:
         table_name : str
             Имя таблицы
         id : int
-            ID объекта обновления.
+            Идентификатор объекта обновления.
         params : dict
             Столбцы которые требуется обновить.
         """
         _model = self.get_model_by_table_name(table_name)
         stmt = update(_model).where(_model.id == id).values(**params)
+        try:
+            self.db.session.execute(stmt)
+            self.db.session.commit()
+        except exc.SQLAlchemyError:
+            self.db.session.rollback()
+            self.db.session.close()
+            self.db.engine.dispose()
+            raise
+        return
+
+    def delete(self, table_name: str, id: int) -> None:
+        """Общий метод для удаления объектов в таблицах.
+
+        Parameters
+        ----------
+        table_name : str
+            Имя таблицы
+        id : int
+            Идентификатор объекта.
+        """
+        _model = self.get_model_by_table_name(table_name)
+        stmt = delete(_model).where(_model.id == id)
         try:
             self.db.session.execute(stmt)
             self.db.session.commit()
