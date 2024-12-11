@@ -2,9 +2,16 @@
 
 {% block content %}
 <h1>Список типов основы</h1>
-{% for type in types %}
-<div>
-    <p>{{ type.type_of_base}}</p>
-</div>
-{% endfor %}
+
+<table border="1px">
+    <tr>
+        <th>Название типа основы</th>
+    </tr>
+    {% for type in types %}
+    <tr>
+        <th>{{type.type_of_base}}</th>
+    </tr>
+    {% endfor %}
+</table>
+
 {% endblock %}

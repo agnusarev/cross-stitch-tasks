@@ -1,10 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Список типов основы</h1>
-{% for image in images %}
-<div>
-    <p>{{ image.type_of_image}}</p>
-</div>
-{% endfor %}
+<h1>Список типов изображения</h1>
+
+<table border="1px">
+    <tr>
+        <th>Название типа изображения</th>
+    </tr>
+    {% for image in images %}
+    <tr>
+        <th>{{image.type_of_image}}</th>
+    </tr>
+    {% endfor %}
+</table>
+
 {% endblock %}
