@@ -83,3 +83,7 @@ class TestCommon(BaseTest):
             },
         )
         assert response.status_code == 302  # type: ignore
+
+    def test_delete_jobs(self, get_client_: "Flask") -> None:
+        response = get_client_.get("/delete/1")
+        assert response.status_code == 302  # type: ignore
