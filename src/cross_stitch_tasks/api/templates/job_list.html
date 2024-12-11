@@ -19,6 +19,7 @@
         <th>Флаг активности работы</th>
         <th>Тип основы</th>
         <th>Тип изображения</th>
+        <th>Удаление</th>
     </tr>
     {% for job in jobs %}
     <tr>
@@ -36,6 +37,7 @@
         <th>{{job.is_active}}</th>
         <th>{{job.type_of_base}}</th>
         <th>{{job.type_of_image}}</th>
+        <th><a href="{{ url_for('delete', id=job.id)}}"> Да </a></th>
     </tr>
     {% endfor %}
 </table>
