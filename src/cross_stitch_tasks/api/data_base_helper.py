@@ -115,6 +115,17 @@ class DataBaseHelper:
         return result_as_df
 
     def update(self, table_name: str, id: int, params: dict) -> None:
+        """Общий метод для редактирования записей в БД.
+
+        Parameters
+        ----------
+        table_name : str
+            Имя таблицы
+        id : int
+            ID объекта обновления.
+        params : dict
+            Столбцы которые требуется обновить.
+        """
         _model = self.get_model_by_table_name(table_name)
         stmt = update(_model).where(_model.id == id).values(**params)
         try:
