@@ -69,11 +69,13 @@ class BaseTest:
     @pytest.fixture(scope="class")
     def define_params(self) -> None:
         from cross_stitch_tasks.api.config import Config
+        from cross_stitch_tasks.settings import Settings
 
         Config.SQLALCHEMY_DATABASE_URI = self.sqlalchemy_database
         Config.SQLALCHEMY_ENGINE_OPTIONS["connect_args"] = {
             "options": f"-c timezone=utc -csearch_path={SettingsTest.TEST_DB_SCHEMA}"
         }
+        Settings.DB_SCHEMA = SettingsTest.TEST_DB_SCHEMA
 
     @pytest.fixture(scope="class")
     def app(self, define_params, db_healthcheck) -> Any:  # type: ignore
