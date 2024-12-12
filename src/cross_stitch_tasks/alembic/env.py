@@ -4,7 +4,7 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 
 import cross_stitch_tasks.api.models  # noqa: F401
-import cross_stitch_tasks.env_vars as local_config
+from cross_stitch_tasks.settings import Settings
 from cross_stitch_tasks.api.app import crud
 from cross_stitch_tasks.api.config import Config
 
@@ -15,7 +15,7 @@ config = context.config
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 if config.config_file_name is not None:
-    fileConfig(local_config.ROOT_FOLDER / "alembic.ini")
+    fileConfig(Settings.ROOT_FOLDER / "alembic.ini")
 
 # add your model's MetaData object here
 # for 'autogenerate' support
@@ -49,7 +49,7 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
-        version_table_schema=local_config.DB_SCHEMA,
+        version_table_schema=Settings.DB_SCHEMA,
     )
 
     with context.begin_transaction():
@@ -71,7 +71,7 @@ def run_migrations_online() -> None:
 
     def include_name(name: str, type_: str, parent_names: list) -> bool:
         if type_ == "schema":
-            return name == local_config.DB_SCHEMA
+            return name == Settings.DB_SCHEMA
         else:
             return True
 
@@ -79,7 +79,7 @@ def run_migrations_online() -> None:
         context.configure(
             connection=connection,
             target_metadata=target_metadata,
-            version_table_schema=local_config.DB_SCHEMA,
+            version_table_schema=Settings.DB_SCHEMA,
             include_schemas=True,
             include_name=include_name,  # type: ignore
         )

@@ -1,12 +1,15 @@
 import logging
 import os
 import time
-from typing import Any
+from dataclasses import dataclass
+from typing import Any, Union
 
 import pytest
 from dotenv import load_dotenv
 from flask_migrate import Migrate, upgrade
 from sqlalchemy import text
+
+from cross_stitch_tasks.settings import MainSettings
 
 load_dotenv()
 
@@ -15,21 +18,25 @@ LOGGER = logging.getLogger(__name__)
 HEALTHCHECK_TRIES = 10
 
 
+@dataclass
+class SettingsTest(MainSettings):
+    TEST_DB_NAME: Union[str, None] = os.getenv("TEST_DB_NAME")
+    TEST_DB_USER: Union[str, None] = os.getenv("TEST_DB_USER")
+    TEST_DB_PASSWORD: Union[str, None] = os.getenv("TEST_DB_PASSWORD")
+    TEST_DB_HOST: Union[str, None] = os.getenv("TEST_DB_HOST")
+    TEST_DB_PORT: Union[str, None] = os.getenv("TEST_DB_PORT")
+    TEST_DB_SCHEMA: Union[str, None] = os.getenv("TEST_DB_SCHEMA")
+    TEST_DIALECT: Union[str, None] = os.getenv("TEST_DIALECT")
+    TEST_DRIVER: Union[str, None] = os.getenv("TEST_DRIVER")
+    TEST_SECRET_KEY: Union[str, None] = os.getenv("TEST_SECRET_KEY")
+
+
 class BaseTest:
-    test_db_name = os.getenv("TEST_DB_NAME")
-    test_db_user = os.getenv("TEST_DB_USER")
-    test_db_password = os.getenv("TEST_DB_PASSWORD")
-    test_db_host = os.getenv("TEST_DB_HOST")
-    test_db_port = os.getenv("TEST_DB_PORT")
-    test_db_schema = os.getenv("TEST_DB_SCHEMA", "main")
-    test_dialect = os.getenv("TEST_DIALECT")
-    test_driver = os.getenv("TEST_DRIVER")
-    test_secret_key = os.getenv("TEST_SECRET_KEY")
     sqlalchemy_database = (
-        f"{test_dialect}+{test_driver}://"
-        f"{test_db_user}:{test_db_password}@"
-        f"{test_db_host}:{test_db_port}/"
-        f"{test_db_name}"
+        f"{SettingsTest.TEST_DIALECT}+{SettingsTest.TEST_DRIVER}://"
+        f"{SettingsTest.TEST_DB_USER}:{SettingsTest.TEST_DB_PASSWORD}@"
+        f"{SettingsTest.TEST_DB_HOST}:{SettingsTest.TEST_DB_PORT}/"
+        f"{SettingsTest.TEST_DB_NAME}"
     )
 
     @pytest.fixture(scope="session")
@@ -40,11 +47,11 @@ class BaseTest:
         for i in range(HEALTHCHECK_TRIES):
             try:
                 connection = psycopg2.connect(
-                    dbname=self.test_db_name,
-                    user=self.test_db_user,
-                    password=self.test_db_password,
-                    host=self.test_db_host,
-                    port=self.test_db_port,
+                    dbname=SettingsTest.TEST_DB_NAME,
+                    user=SettingsTest.TEST_DB_USER,
+                    password=SettingsTest.TEST_DB_PASSWORD,
+                    host=SettingsTest.TEST_DB_HOST,
+                    port=SettingsTest.TEST_DB_PORT,
                 )
                 cur = connection.cursor()
                 cur.execute("SELECT 1;")
@@ -61,14 +68,12 @@ class BaseTest:
 
     @pytest.fixture(scope="class")
     def define_params(self) -> None:
-        import cross_stitch_tasks.env_vars as env_vars
         from cross_stitch_tasks.api.config import Config
 
         Config.SQLALCHEMY_DATABASE_URI = self.sqlalchemy_database
         Config.SQLALCHEMY_ENGINE_OPTIONS["connect_args"] = {
-            "options": f"-c timezone=utc -csearch_path={self.test_db_schema}"
+            "options": f"-c timezone=utc -csearch_path={SettingsTest.TEST_DB_SCHEMA}"
         }
-        env_vars.DB_SCHEMA = self.test_db_schema
 
     @pytest.fixture(scope="class")
     def app(self, define_params, db_healthcheck) -> Any:  # type: ignore
@@ -79,9 +84,9 @@ class BaseTest:
 
         test_config = {
             "TESTING": True,
-            "DB_SCHEMA": self.test_db_schema,
+            "DB_SCHEMA": SettingsTest.TEST_DB_SCHEMA,
             "SQLALCHEMY_DATABASE_URI": self.sqlalchemy_database,
-            "SECRET_KEY": self.test_secret_key,
+            "SECRET_KEY": SettingsTest.TEST_SECRET_KEY,
         }
         app = create_app(test_config)
         with app.app_context():
@@ -92,17 +97,16 @@ class BaseTest:
         """
         Метод для подключения к тестовой базе данных.
         """
-        from cross_stitch_tasks.env_vars import ROOT_FOLDER
         from cross_stitch_tasks.api.app import crud
 
         with crud.db.engine.connect() as conn:
-            conn.execute(text(f"DROP SCHEMA IF EXISTS {self.test_db_schema} CASCADE;"))
+            conn.execute(text(f"DROP SCHEMA IF EXISTS {SettingsTest.TEST_DB_SCHEMA} CASCADE;"))
             conn.commit()
-            conn.execute(text(f"CREATE SCHEMA IF NOT EXISTS {self.test_db_schema};"))
+            conn.execute(text(f"CREATE SCHEMA IF NOT EXISTS {SettingsTest.TEST_DB_SCHEMA};"))
             conn.commit()
 
-        crud.schema = self.test_db_schema
-        Migrate(app, crud.db, ROOT_FOLDER / "src" / "cross_stitch_tasks" / "alembic")
+        crud.schema = SettingsTest.TEST_DB_SCHEMA
+        Migrate(app, crud.db, SettingsTest.ROOT_FOLDER / "src" / "cross_stitch_tasks" / "alembic")
         upgrade(revision="head")
 
         yield crud
@@ -110,7 +114,7 @@ class BaseTest:
         crud.db.session.close()
         crud.db.engine.dispose()
         with crud.db.engine.connect() as conn:
-            conn.execute(text(f"DROP SCHEMA IF EXISTS {self.test_db_schema} CASCADE;"))
+            conn.execute(text(f"DROP SCHEMA IF EXISTS {SettingsTest.TEST_DB_SCHEMA} CASCADE;"))
             conn.commit()
 
     @pytest.fixture

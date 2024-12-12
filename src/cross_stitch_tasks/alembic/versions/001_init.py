@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from alembic import op
 from sqlalchemy.dialects import postgresql
 
-from cross_stitch_tasks.env_vars import DB_SCHEMA
+from cross_stitch_tasks.settings import Settings
 
 # revision identifiers, used by Alembic.
 revision: str = "001"
@@ -29,7 +29,7 @@ def upgrade() -> None:
         sa.Column("time_stamp", postgresql.TIMESTAMP(timezone=True), nullable=False, comment="Момент записи данных"),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("id"),
-        schema=DB_SCHEMA,
+        schema=Settings.DB_SCHEMA,
     )
     op.create_table(
         "types_of_image",
@@ -38,7 +38,7 @@ def upgrade() -> None:
         sa.Column("time_stamp", postgresql.TIMESTAMP(timezone=True), nullable=False, comment="Момент записи данных"),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("id"),
-        schema=DB_SCHEMA,
+        schema=Settings.DB_SCHEMA,
     )
     op.create_table(
         "jobs",
@@ -60,15 +60,15 @@ def upgrade() -> None:
         sa.Column("time_stamp", postgresql.TIMESTAMP(timezone=True), nullable=False, comment="Момент записи данных"),
         sa.ForeignKeyConstraint(
             ["type_of_base_id"],
-            [f"{DB_SCHEMA}.types_of_base.id"],
+            [f"{Settings.DB_SCHEMA}.types_of_base.id"],
         ),
         sa.ForeignKeyConstraint(
             ["type_of_image_id"],
-            [f"{DB_SCHEMA}.types_of_image.id"],
+            [f"{Settings.DB_SCHEMA}.types_of_image.id"],
         ),
         sa.PrimaryKeyConstraint("id", "type_of_base_id", "type_of_image_id"),
         sa.UniqueConstraint("id"),
-        schema=DB_SCHEMA,
+        schema=Settings.DB_SCHEMA,
     )
     op.create_table(
         "processes",
@@ -89,16 +89,16 @@ def upgrade() -> None:
         sa.Column("time_stamp", postgresql.TIMESTAMP(timezone=True), nullable=False, comment="Момент записи данных"),
         sa.ForeignKeyConstraint(
             ["job_id"],
-            [f"{DB_SCHEMA}.jobs.id"],
+            [f"{Settings.DB_SCHEMA}.jobs.id"],
         ),
         sa.PrimaryKeyConstraint("id", "job_id"),
         sa.UniqueConstraint("id"),
-        schema=DB_SCHEMA,
+        schema=Settings.DB_SCHEMA,
     )
 
 
 def downgrade() -> None:
-    op.drop_table("processes", schema=DB_SCHEMA)
-    op.drop_table("jobs", schema=DB_SCHEMA)
-    op.drop_table("types_of_image", schema=DB_SCHEMA)
-    op.drop_table("types_of_base", schema=DB_SCHEMA)
+    op.drop_table("processes", schema=Settings.DB_SCHEMA)
+    op.drop_table("jobs", schema=Settings.DB_SCHEMA)
+    op.drop_table("types_of_image", schema=Settings.DB_SCHEMA)
+    op.drop_table("types_of_base", schema=Settings.DB_SCHEMA)
