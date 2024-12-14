@@ -58,6 +58,7 @@ class Job(MethodView):
         images = crud.get_actual_table("types_of_image")
         jobs = crud.get_actual_table("jobs")
 
+        # TODO исправить merge, нужно убрать дублирующие колонки и исправить потом job_list.html
         jobs = jobs.merge(types, left_on="type_of_base_id", right_on="id")
         jobs = jobs.merge(images, left_on="type_of_image_id", right_on="id")
 

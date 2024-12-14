@@ -23,7 +23,7 @@
     </tr>
     {% for job in jobs %}
     <tr>
-        <th><a href="{{ url_for('processes', id=job.id)}}"> {{job.name}} </a></th>
+        <th><a href="{{ url_for('processes', id=job.id_x)}}"> {{job.name}} </a></th>
         <th>{{job.length_in_cm}}</th>
         <th>{{job.width_in_cm}}</th>
         <th>{{job.length_in_crosses}}</th>
@@ -37,7 +37,7 @@
         <th>{{job.is_active}}</th>
         <th>{{job.type_of_base}}</th>
         <th>{{job.type_of_image}}</th>
-        <th><a href="{{ url_for('delete', id=job.id)}}"> Да </a></th>
+        <th><a href="{{ url_for('delete', id=job.id_x)}}"> Да </a></th>
     </tr>
     {% endfor %}
 </table>
